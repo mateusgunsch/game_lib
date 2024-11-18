@@ -1,14 +1,27 @@
 import { useState } from "react"
 
 export default function App() {
-    const [games, setGames] = useState([])
+    const [games, setGames] = useState(() => {
+        const storedGames = localStorage.getItem("obc-game-lib")
+        return !storedGames ? [] : JSON.parse(storedGames)
+    })
     const [title, setTitle] = useState("")
     const [cover, setCover] = useState("")
 
     const addGame = ({ title, cover }) => {
         const id = Math.floor(Math.random() * 1000000)
         const game = { id, title, cover }
-        setGames(state => [...state, game])
+        setGames(state => {
+            const newState = [...state, game]
+            localStorage.setItem("obc-game-lib", JSON.stringify(newState))
+            return newState
+        })
+    }
+
+    const removeGame = (id) => {
+        const newState = setGames(state => state.filter(game => game.id !== id))
+        localStorage.setItem("obc-game-lib", JSON.stringify(newState))
+        return newState
     }
 
     const handleSubmit = (ev) => {
@@ -48,10 +61,10 @@ export default function App() {
             <div className="games">
                 {games.map((game) => (
                     <div key={game.id}>
-                        <img src={game.cover} alt="Imagem de Capa" />
+                        <img src={game.cover} alt={game.cover} />
                         <div>
                             <h2>{game.title}</h2>
-                            <button>Remover</button>
+                            <button onClick={() => removeGame(game.id)}>Remover</button>
                         </div>
                     </div>
                 ))}
