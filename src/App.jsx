@@ -11,14 +11,19 @@ export default function App() {
             <NewGameForm addGame={addGame} />
 
             <div className="games">
-                {games.map((game) => (
-                    <Game
-                        key={game.id}
-                        title={game.title}
-                        cover={game.cover}
-                        onRemove={() => removeGame(game.id)}
-                    />
-                ))}
+                {games.length > 0
+                ? games.map((game) => (
+                        <Game
+                            key={game.id}
+                            title={game.title}
+                            cover={game.cover}
+                            onRemove={() => removeGame(game.id)}
+                        />
+                    ))
+                    : (
+                        <h2 style={{ margin: "7rem auto"}}>Parece que ainda não tem nada aqui.</h2>
+                    )
+                }
             </div>
         </div>
     )
